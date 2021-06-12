@@ -1,28 +1,224 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
+// One user can be Admin, Client and an Operator
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  email      String
-  createDate DateTime
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String
+  password String
 
-  post Post[]
+  // ########## METADATA
+  created_date DateTime
+  deactivated  Boolean
+
+  // #######  RELATIONSHIPS
+  admin_id    Int?      @unique // one-to-one relationship non-obligatory
+  admin       Admin?    @relation(fields: [admin_id], references: [id]) //foreign key
+  client_id   Int?      @unique
+  client      Client?   @relation(fields: [client_id], references: [id]) //foreign key
+  operator_id Int?      @unique
+  operator    Operator? @relation(fields: [operator_id], references: [id]) //foreign key
+  Review      Review[] // one-to-many relationship: one user can post many reviews, but one review can´t be posted by many users
 }
 
-model Post {
-  id         Int      @id @default(autoincrement())
-  post       String
-  title      String
-  createDate DateTime
-  userId     Int
-  user       User     @relation(fields: [userId], references: [id])
+model Admin {
+  id Int @id @default(autoincrement())
+
+  // ##### RELATIONSHIPS
+  user User?
 }
+
+model Client {
+  id    Int    @id @default(autoincrement())
+  phone String
+
+  // ####### RELATIONSHIPS
+  user          User?
+  Payment       Payment[] //one-to-many relationship: one client can have made many payments **check!
+  ShuttleTravel ShuttleTravel[]
+  BillingData   BillingData[]
+
+}
+
+model Operator {
+  id        Int     @id @default(autoincrement())
+  available Boolean
+  phone     String
+
+  // ####### RELATIONSHIPS
+  user          User?
+  Shuttle       Shuttle?        @relation(fields: [shuttle_id], references: [id])
+  shuttle_id    Int?
+  ShuttleTravel ShuttleTravel[]
+}
+
+model Shuttle {
+  id               Int     @id @default(autoincrement())
+  shuttle_number   String
+  available        Boolean
+  registration_tag String
+  seats            Int
+
+  // ##### METADATA
+  create_date DateTime
+
+  // ########## RELATIONSHIPS
+  operator_id   Int
+  operator      Operator[] // one-to-many relationship: one shuttle can operated by more than one operator
+  ShuttleTravel ShuttleTravel[] // one-to many relationship: one shuttle can have many shuttle travels
+
+  //TODO: misiing relationship: services
+}
+
+model ShuttleTravel {
+  id              Int      @id @default(autoincrement())
+  start_date      DateTime
+  end_date        DateTime
+  distance_meters Int
+
+  // ###### METADATA
+  creation_date DateTime
+
+
+  // ##### RELATIONSHIPS
+  shuttle_id  Int
+  shuttle     Shuttle  @relation(fields: [shuttle_id], references: [id])
+  client_id   Int
+  client      Client   @relation(fields: [client_id], references: [id])
+  operator_id Int
+  operator    Operator @relation(fields: [operator_id], references: [id])
+
+
+  //TODO: missing relationship: location, region**
+
+}
+
+model PaymentMethod {
+  id   Int    @id @default(autoincrement())
+  name String
+
+
+  // ####### RELATIONSHIPS
+
+  Payment       Payment[]
+  BillingData   BillingData? @relation(fields: [billingDataId], references: [id])
+  billingDataId Int?
+}
+
+model Payment {
+  id           Int @id @default(autoincrement())
+  total_amount Int
+  token_id     Int
+
+  // #### METADATA
+  create_date DateTime
+
+  // ##### RELATIONSHIPS
+  client_id         Int
+  client            Client        @relation(fields: [client_id], references: [id])
+  refund_id         Int?
+  refund            Refund?       @relation(fields: [refund_id], references: [id])
+  Service           Service? //one-to-one(optional) relationaship: non-obligatory, one service needs a payment but a payment can be done without a service
+  payment_method_id Int
+  payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id])
+  billing_data_id   Int
+  billing_data      BillingData   @relation(fields: [billing_data_id], references: [id])
+
+}
+
+model BillingData {
+  id            Int    @id @default(autoincrement())
+  rfc           String
+  address       String
+  email_billing String
+  payment_card  String
+  card_number   Int
+
+
+  // ###### RELAITONSHIPS
+  client_id Int
+  client    Client    @relation(fields: [client_id], references: [id])
+  Payment   Payment[]
+
+  PaymentMethod PaymentMethod[]
+}
+
+model Refund {
+  id       Int @id @default(autoincrement())
+  amount   Int
+  token_id Int
+
+  // #### METADATA
+  create_date DateTime
+
+  // #### RELATIONSHIPS
+  Payment Payment? // one-to-one(optional) relationship: one
+}
+
+//One shuttle can be operated by many operators
+
+model Service {
+  id    Int    @id @default(autoincrement())
+  folio String //this will serve as the ticket
+
+  // ##### METADATA
+  create_date DateTime
+
+
+  // #### RELATIONSHIPS
+  payment_id      Int?              @unique
+  payment         Payment?          @relation(fields: [payment_id], references: [id])
+  cancellation_id Int?
+  cancellation    Cancellation?     @relation(fields: [cancellation_id], references: [id])
+  status_id       Int
+  status          ServiceStatus     @relation(fields: [status_id], references: [id])
+  ServiceMetadata ServiceMetadata[]
+}
+
+model ServiceStatus {
+  id     Int    @id @default(autoincrement())
+  status String
+
+  // ###### RELATIONSHIPS
+  Service Service[]
+}
+
+model ServiceMetadata {
+  id                Int      @id @default(autoincrement())
+  modification_data DateTime
+  snapshot_data     Json
+
+  // ##### RELATIONSHIPS
+  service_id Int
+  service    Service @relation(fields: [service_id], references: [id])
+}
+
+model Cancellation {
+  id                 Int      @id @default(autoincrement())
+  cancelation_pholio String
+  create_date        DateTime
+  delete_date        DateTime
+  // one service can have one cancellation
+  Service            Service? //one-to-one relationship: one service can only have one cancellation **check!
+}
+
+//salidas
+
+model Review {
+  id            Int      @id @default(autoincrement())
+  qualification String
+  rating        Int // 1 to 5, meaning 5 the top grade
+  user_id       Int
+  author        User     @relation(fields: [user_id], references: [id]) // foreign-key
+  create_date   DateTime
+  delete_date   DateTime
+}
+
+//One user can post many reviews of one service
