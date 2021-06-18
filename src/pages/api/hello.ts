@@ -1,5 +1,14 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default (req, res) => {
-  res.status(200).json({ name: 'John Doe' })
-}
+export default (req: NextApiRequest, res: NextApiResponse) => {
+  const body = req.body;
+
+  switch (req.method) {
+    case "GET":
+      res.status(200).json({ hello: "world", body });
+      break;
+    default:
+      res.status(405).json("method not allowed");
+      break;
+  }
+};
