@@ -10,22 +10,22 @@ datasource db {
 // One user can be Admin, Client and an Operator
 model User {
   id       Int    @id @default(autoincrement())
-  name     String
-  email    String
-  password String
+  name     String @db.VarChar(2000)
+  email    String @db.VarChar(2000)
+  password String @db.VarChar(2000)
 
   // ########## METADATA
   created_date DateTime
   deactivated  Boolean
 
   // #######  RELATIONSHIPS
-  admin_id    Int?      @unique // one-to-one relationship non-obligatory
-  admin       Admin?    @relation(fields: [admin_id], references: [id]) //foreign key
-  client_id   Int?      @unique
-  client      Client?   @relation(fields: [client_id], references: [id]) //foreign key
-  operator_id Int?      @unique
-  operator    Operator? @relation(fields: [operator_id], references: [id]) //foreign key
-  Review      Review[] // one-to-many relationship: one user can post many reviews, but one review can´t be posted by many users
+  adminId    Int?      @unique // one-to-one relationship non-obligatory
+  admin      Admin?    @relation(fields: [adminId], references: [id]) //foreign key
+  clientId   Int?      @unique
+  client     Client?   @relation(fields: [clientId], references: [id]) //foreign key
+  operatorId Int?      @unique
+  operator   Operator? @relation(fields: [operatorId], references: [id]) //foreign key
+  Review     Review[] // one-to-many relationship: one user can post many reviews, but one review can´t be posted by many users
 }
 
 model Admin {
@@ -37,7 +37,7 @@ model Admin {
 
 model Client {
   id    Int    @id @default(autoincrement())
-  phone String
+  phone String @db.VarChar(2000)
 
   // ####### RELATIONSHIPS
   user          User?
@@ -45,32 +45,33 @@ model Client {
   ShuttleTravel ShuttleTravel[]
   BillingData   BillingData[]
 
+  Promotion Promotion[] //one-to-many relationships: one client can have many promotions check?
 }
 
 model Operator {
   id        Int     @id @default(autoincrement())
   available Boolean
-  phone     String
+  phone     String  @db.VarChar(2000)
 
   // ####### RELATIONSHIPS
   user          User?
-  Shuttle       Shuttle?        @relation(fields: [shuttle_id], references: [id])
-  shuttle_id    Int?
+  Shuttle       Shuttle?        @relation(fields: [shuttleId], references: [id])
+  shuttleId     Int?
   ShuttleTravel ShuttleTravel[]
 }
 
 model Shuttle {
   id               Int     @id @default(autoincrement())
-  shuttle_number   String
+  shuttle_number   String  @db.VarChar(2000)
   available        Boolean
-  registration_tag String
+  registration_tag String  @db.VarChar(2000)
   seats            Int
 
   // ##### METADATA
   create_date DateTime
 
   // ########## RELATIONSHIPS
-  operator_id   Int
+  operatorId    Int
   operator      Operator[] // one-to-many relationship: one shuttle can operated by more than one operator
   ShuttleTravel ShuttleTravel[] // one-to many relationship: one shuttle can have many shuttle travels
 
@@ -88,21 +89,22 @@ model ShuttleTravel {
 
 
   // ##### RELATIONSHIPS
-  shuttle_id  Int
-  shuttle     Shuttle  @relation(fields: [shuttle_id], references: [id])
-  client_id   Int
-  client      Client   @relation(fields: [client_id], references: [id])
-  operator_id Int
-  operator    Operator @relation(fields: [operator_id], references: [id])
+  shuttleId  Int
+  shuttle    Shuttle  @relation(fields: [shuttleId], references: [id])
+  clientId   Int
+  client     Client   @relation(fields: [clientId], references: [id])
+  operatorId Int
+  operator   Operator @relation(fields: [operatorId], references: [id])
 
 
   //TODO: missing relationship: location, region**
 
+  Location Location[]
 }
 
 model PaymentMethod {
   id   Int    @id @default(autoincrement())
-  name String
+  name String @db.VarChar(2000)
 
 
   // ####### RELATIONSHIPS
@@ -115,45 +117,45 @@ model PaymentMethod {
 model Payment {
   id           Int @id @default(autoincrement())
   total_amount Int
-  token_id     Int
+  tokenId      Int
 
   // #### METADATA
   create_date DateTime
 
   // ##### RELATIONSHIPS
-  client_id         Int
-  client            Client        @relation(fields: [client_id], references: [id])
-  refund_id         Int?
-  refund            Refund?       @relation(fields: [refund_id], references: [id])
-  Service           Service? //one-to-one(optional) relationaship: non-obligatory, one service needs a payment but a payment can be done without a service
-  payment_method_id Int
-  payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id])
-  billing_data_id   Int
-  billing_data      BillingData   @relation(fields: [billing_data_id], references: [id])
+  clientId        Int
+  client          Client        @relation(fields: [clientId], references: [id])
+  refundId        Int?
+  refund          Refund?       @relation(fields: [refundId], references: [id])
+  Service         Service? //one-to-one(optional) relationaship: non-obligatory, one service needs a payment but a payment can be done without a service
+  paymentMethodId Int
+  payment_method  PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  billingDataId   Int
+  billing_data    BillingData   @relation(fields: [billingDataId], references: [id])
 
 }
 
 model BillingData {
   id            Int    @id @default(autoincrement())
-  rfc           String
-  address       String
-  email_billing String
-  payment_card  String
+  rfc           String @db.VarChar(2000)
+  address       String @db.VarChar(2000)
+  email_billing String @db.VarChar(2000)
+  payment_card  String @db.VarChar(2000)
   card_number   Int
 
 
   // ###### RELAITONSHIPS
-  client_id Int
-  client    Client    @relation(fields: [client_id], references: [id])
-  Payment   Payment[]
+  clientId Int
+  client   Client    @relation(fields: [clientId], references: [id])
+  Payment  Payment[]
 
   PaymentMethod PaymentMethod[]
 }
 
 model Refund {
-  id       Int @id @default(autoincrement())
-  amount   Int
-  token_id Int
+  id      Int @id @default(autoincrement())
+  amount  Int
+  tokenId Int
 
   // #### METADATA
   create_date DateTime
@@ -166,25 +168,26 @@ model Refund {
 
 model Service {
   id    Int    @id @default(autoincrement())
-  folio String //this will serve as the ticket
+  folio String @db.VarChar(2000) //this will serve as the ticket
 
   // ##### METADATA
   create_date DateTime
 
 
   // #### RELATIONSHIPS
-  payment_id      Int?              @unique
-  payment         Payment?          @relation(fields: [payment_id], references: [id])
-  cancellation_id Int?
-  cancellation    Cancellation?     @relation(fields: [cancellation_id], references: [id])
-  status_id       Int
-  status          ServiceStatus     @relation(fields: [status_id], references: [id])
+  paymentId       Int?              @unique
+  payment         Payment?          @relation(fields: [paymentId], references: [id])
+  cancellationId  Int?
+  cancellation    Cancellation?     @relation(fields: [cancellationId], references: [id])
+  statusId        Int
+  status          ServiceStatus     @relation(fields: [statusId], references: [id])
   ServiceMetadata ServiceMetadata[]
+  Promotion       Promotion[]
 }
 
 model ServiceStatus {
   id     Int    @id @default(autoincrement())
-  status String
+  status String @db.VarChar(2000)
 
   // ###### RELATIONSHIPS
   Service Service[]
@@ -196,29 +199,54 @@ model ServiceMetadata {
   snapshot_data     Json
 
   // ##### RELATIONSHIPS
-  service_id Int
-  service    Service @relation(fields: [service_id], references: [id])
+  serviceId Int
+  service   Service @relation(fields: [serviceId], references: [id])
 }
 
 model Cancellation {
   id                 Int      @id @default(autoincrement())
-  cancelation_pholio String
+  cancelation_pholio String   @db.VarChar(2000)
   create_date        DateTime
   delete_date        DateTime
   // one service can have one cancellation
   Service            Service? //one-to-one relationship: one service can only have one cancellation **check!
 }
 
-//salidas
-
 model Review {
-  id            Int      @id @default(autoincrement())
-  qualification String
-  rating        Int // 1 to 5, meaning 5 the top grade
-  user_id       Int
-  author        User     @relation(fields: [user_id], references: [id]) // foreign-key
-  create_date   DateTime
-  delete_date   DateTime
+  id          Int      @id @default(autoincrement())
+  comment     String   @db.VarChar(2000) //One user can post many reviews of one service
+  rating      Int // 1 to 5, meaning 5 the top grade
+  userId      Int
+  author      User     @relation(fields: [userId], references: [id]) // foreign-key
+  create_date DateTime
+  delete_date DateTime
 }
 
-//One user can post many reviews of one service
+model Location {
+  id              Int           @id @default(autoincrement())
+  name            String?       @db.VarChar(2000)
+  address         String        @db.VarChar(2000)
+  region          String        @db.VarChar(2000)
+  shuttleTravelId Int
+  poligon         Json // poligon: field where all the coordinates will be stored in a Json format
+  shuttleTravel   ShuttleTravel @relation(fields: [shuttleTravelId], references: [id])
+
+}
+
+//Promociones (Deals/Promotion ?)
+model Promotion {
+  id                  Int      @id @default(autoincrement())
+  coupon_code         String   @db.VarChar(2000)
+  application_date    DateTime
+  application_service String   @db.VarChar(2000) //check ?
+  application_client  String   @db.VarChar(2000) //check ?
+  clientId            Int?
+  serviceId           Int?
+
+
+  //  #####  RELATIONSHIPS
+  client  Client?  @relation(fields: [clientId], references: [id])
+  service Service? @relation(fields: [serviceId], references: [id]) //check: one service can have zero, one or more promotions
+
+
+}
