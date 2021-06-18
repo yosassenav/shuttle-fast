@@ -15,8 +15,8 @@ model User {
   password String @db.VarChar(2000)
 
   // ########## METADATA
-  created_date DateTime
-  deactivated  Boolean
+  createdDate DateTime
+  deactivated Boolean
 
   // #######  RELATIONSHIPS
   adminId    Int?      @unique // one-to-one relationship non-obligatory
@@ -61,14 +61,14 @@ model Operator {
 }
 
 model Shuttle {
-  id               Int     @id @default(autoincrement())
-  shuttle_number   String  @db.VarChar(2000)
-  available        Boolean
-  registration_tag String  @db.VarChar(2000)
-  seats            Int
+  id              Int     @id @default(autoincrement())
+  shuttleNumber   Int
+  available       Boolean
+  registrationTag String  @db.VarChar(28)
+  seats           Int
 
   // ##### METADATA
-  create_date DateTime
+  createDate DateTime
 
   // ########## RELATIONSHIPS
   operatorId    Int
@@ -79,13 +79,13 @@ model Shuttle {
 }
 
 model ShuttleTravel {
-  id              Int      @id @default(autoincrement())
-  start_date      DateTime
-  end_date        DateTime
-  distance_meters Int
+  id             Int      @id @default(autoincrement())
+  startDate      DateTime
+  endDate        DateTime
+  distanceMeters Int
 
   // ###### METADATA
-  creation_date DateTime
+  creationDate DateTime
 
 
   // ##### RELATIONSHIPS
@@ -115,12 +115,12 @@ model PaymentMethod {
 }
 
 model Payment {
-  id           Int @id @default(autoincrement())
-  total_amount Int
-  tokenId      Int
+  id          Int @id @default(autoincrement())
+  totalAmount Int
+  tokenId     Int
 
   // #### METADATA
-  create_date DateTime
+  createDate DateTime
 
   // ##### RELATIONSHIPS
   clientId        Int
@@ -129,19 +129,18 @@ model Payment {
   refund          Refund?       @relation(fields: [refundId], references: [id])
   Service         Service? //one-to-one(optional) relationaship: non-obligatory, one service needs a payment but a payment can be done without a service
   paymentMethodId Int
-  payment_method  PaymentMethod @relation(fields: [paymentMethodId], references: [id])
+  paymentMethod   PaymentMethod @relation(fields: [paymentMethodId], references: [id])
   billingDataId   Int
-  billing_data    BillingData   @relation(fields: [billingDataId], references: [id])
+  billingData     BillingData   @relation(fields: [billingDataId], references: [id])
 
 }
 
 model BillingData {
-  id            Int    @id @default(autoincrement())
-  rfc           String @db.VarChar(2000)
-  address       String @db.VarChar(2000)
-  email_billing String @db.VarChar(2000)
-  payment_card  String @db.VarChar(2000)
-  card_number   Int
+  id           Int    @id @default(autoincrement())
+  rfc          String @db.VarChar(2000)
+  address      String @db.VarChar(2000)
+  emailBilling String @db.VarChar(2000)
+  cardNumber   Int
 
 
   // ###### RELAITONSHIPS
@@ -158,7 +157,7 @@ model Refund {
   tokenId Int
 
   // #### METADATA
-  create_date DateTime
+  createDate DateTime
 
   // #### RELATIONSHIPS
   Payment Payment? // one-to-one(optional) relationship: one
@@ -168,10 +167,10 @@ model Refund {
 
 model Service {
   id    Int    @id @default(autoincrement())
-  folio String @db.VarChar(2000) //this will serve as the ticket
+  folio String @db.VarChar(64) //this will serve as the ticket
 
   // ##### METADATA
-  create_date DateTime
+  createDate DateTime
 
 
   // #### RELATIONSHIPS
@@ -194,9 +193,9 @@ model ServiceStatus {
 }
 
 model ServiceMetadata {
-  id                Int      @id @default(autoincrement())
-  modification_data DateTime
-  snapshot_data     Json
+  id               Int      @id @default(autoincrement())
+  modificationData DateTime
+  snapshotData     Json
 
   // ##### RELATIONSHIPS
   serviceId Int
@@ -204,22 +203,22 @@ model ServiceMetadata {
 }
 
 model Cancellation {
-  id                 Int      @id @default(autoincrement())
-  cancelation_pholio String   @db.VarChar(2000)
-  create_date        DateTime
-  delete_date        DateTime
+  id                Int      @id @default(autoincrement())
+  cancelationPholio String   @db.VarChar(2000)
+  createDate        DateTime
+  deleteDate        DateTime
   // one service can have one cancellation
-  Service            Service? //one-to-one relationship: one service can only have one cancellation **check!
+  Service           Service? //one-to-one relationship: one service can only have one cancellation **check!
 }
 
 model Review {
-  id          Int      @id @default(autoincrement())
-  comment     String   @db.VarChar(2000) //One user can post many reviews of one service
-  rating      Int // 1 to 5, meaning 5 the top grade
-  userId      Int
-  author      User     @relation(fields: [userId], references: [id]) // foreign-key
-  create_date DateTime
-  delete_date DateTime
+  id         Int      @id @default(autoincrement())
+  comment    String   @db.VarChar(2000) //One user can post many reviews of one service
+  rating     Int // 1 to 5, meaning 5 the top grade
+  userId     Int
+  author     User     @relation(fields: [userId], references: [id]) // foreign-key
+  createDate DateTime
+  deleteDate DateTime
 }
 
 model Location {
@@ -235,18 +234,14 @@ model Location {
 
 //Promociones (Deals/Promotion ?)
 model Promotion {
-  id                  Int      @id @default(autoincrement())
-  coupon_code         String   @db.VarChar(2000)
-  application_date    DateTime
-  application_service String   @db.VarChar(2000) //check ?
-  application_client  String   @db.VarChar(2000) //check ?
-  clientId            Int?
-  serviceId           Int?
+  id              Int      @id @default(autoincrement())
+  couponCode      String   @db.VarChar(2000)
+  applicationDate DateTime
+  clientId        Int?
+  serviceId       Int?
 
 
   //  #####  RELATIONSHIPS
   client  Client?  @relation(fields: [clientId], references: [id])
   service Service? @relation(fields: [serviceId], references: [id]) //check: one service can have zero, one or more promotions
-
-
 }
