@@ -1,6 +1,4 @@
-// SERVICE LAYER
-
-import { UserRepository } from "./repository";
+import { UserRepository } from "@/api/user/repository";
 
 export class UserService {
   async getUsers() {

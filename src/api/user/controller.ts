@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { UserService } from "./service";
+import { UserService } from "@/api/user/service";
 
 export class UserController {
   async getUsers(req: NextApiRequest, res: NextApiResponse) {

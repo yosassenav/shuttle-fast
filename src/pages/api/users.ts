@@ -1,19 +1,87 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { UserController } from "../../api/user/controller";
-
-// NETWORK
+import { UserController } from "@/api/user/controller";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  // where to get the users?
   const controller = new UserController();
-  const users = await controller.getUsers(req, res);
 
-  switch (req.method) {
-    case "GET":
-      return res.status(200).json({
-        data: { users },
-      });
-    default:
-      return res.status(405).json("method not allowed");
-  }
+  Route.navigate({
+    controller,
+    req,
+    res,
+  });
 };
+
+interface IProps {
+  controller: UserController;
+  req: NextApiRequest;
+  res: NextApiResponse;
+}
+
+type RouteMethod = (props: IProps) => Promise<void>;
+
+class BaseRoute {
+  static async handleError(props: IProps, method: RouteMethod) {
+    try {
+      return await method(props);
+    } catch (error: any) {
+      props.res.status(500).json({
+        message: "Users GET method has failed.",
+        error: error,
+      });
+    }
+  }
+
+  static notImplemented(res: NextApiResponse) {
+    res.status(501).json("Method not implemented yet.");
+  }
+}
+
+class Route extends BaseRoute {
+  static async navigate(props: IProps) {
+    await this.redirection(props);
+  }
+
+  private static async redirection(props: IProps) {
+    const { req, res } = props;
+
+    switch (req.method) {
+      case "DELETE":
+        return await this.handleError(props, this.delete);
+      case "GET":
+        return await this.handleError(props, this.get);
+      case "PATCH":
+        return await this.handleError(props, this.patch);
+      case "POST":
+        return await this.handleError(props, this.post);
+      case "PUT":
+        return await this.handleError(props, this.put);
+      default:
+        res.status(405).json("method not allowed.");
+    }
+  }
+
+  private static async delete(props: IProps) {
+    this.notImplemented(props.res);
+  }
+
+  private static async get(props: IProps) {
+    const { controller, req, res } = props;
+    const result = await controller.getUsers(req, res);
+
+    res.status(200).json({
+      data: { result },
+    });
+  }
+
+  private static async patch(props: IProps) {
+    this.notImplemented(props.res);
+  }
+
+  private static async post(props: IProps) {
+    this.notImplemented(props.res);
+  }
+
+  private static async put(props: IProps) {
+    this.notImplemented(props.res);
+  }
+}
