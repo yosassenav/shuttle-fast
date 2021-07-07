@@ -4,11 +4,11 @@ import { InferGetServerSidePropsType } from "next";
 
 export const getServerSideProps = async () => {
   const res = await fetch("http://localhost:3000/api/users");
-  const response: { data: { users: Array<User> } } = await res.json();
+  const response: { data: Array<User> } = await res.json();
 
   return {
     props: {
-      response,
+      users: response.data,
     },
   };
 };
@@ -25,7 +25,7 @@ export default function Home(
           <td>email</td>
           <td>password</td>
         </tr>
-        {props.response.data.users.map((user) => {
+        {props.users.map((user) => {
           return (
             <tr>
               <td>{user.id}</td>

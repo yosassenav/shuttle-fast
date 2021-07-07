@@ -69,7 +69,7 @@ class Route extends BaseRoute {
     const result = await controller.getUsers(req, res);
 
     res.status(200).json({
-      data: { result },
+      data: result,
     });
   }
 

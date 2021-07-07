@@ -6,10 +6,6 @@ export class UserService {
     const userRepository = new UserRepository();
     const result = await userRepository.getAllUsers();
 
-    // logica de negocio
-
-    result.map((user) => (user.name = "Logica Especial"));
-
     return result;
   }
 }

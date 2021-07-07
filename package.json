@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "push": "npx prisma db push --schema=./src/server/prisma/schema.prisma --force-reset",
-    "generate": "npx prisma generate --schema=./src/server/prisma/schema.prisma"
+    "generate": "npx prisma generate --schema=./src/server/prisma/schema.prisma",
+    "studio": "npx prisma studio --schema=./src/server/prisma/schema.prisma"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
