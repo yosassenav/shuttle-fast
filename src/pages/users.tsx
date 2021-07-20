@@ -10,7 +10,7 @@ const WaitPromise = (ms: number) => new Promise((r) => setTimeout(r, ms));
 interface ISsrPageViews
   extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
-/* Función SSR */
+/* Función SSR: Server Side Rendering */
 export const getServerSideProps = async () => {
   await WaitPromise(1500);
 

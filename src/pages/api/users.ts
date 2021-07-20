@@ -11,6 +11,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   });
 };
 
+/*Interfaz donde se definen los parámetros que utilizará la clase 'Route'*/
 interface IProps {
   controller: UserController;
   req: NextApiRequest;
@@ -36,6 +37,7 @@ class BaseRoute {
   }
 }
 
+/*La clase Route hereda de la clase BaseRoute*/
 class Route extends BaseRoute {
   static async navigate(props: IProps) {
     await this.redirection(props);
