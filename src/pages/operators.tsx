@@ -2,8 +2,6 @@ import { InferGetServerSidePropsType } from "next";
 import { Operator } from "@prisma/client";
 import { ContainerOperators } from "@/containers/operators";
 
-
-
 const WaitPromise = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 interface ISsrPageViews
@@ -29,5 +27,5 @@ interface IPageOperatorsProps extends ISsrPageViews {}
 export default function PageOperators(props: IPageOperatorsProps) {
   const { operators } = props;
 
-  return <ContainerOperators operators={operators}/>;
+  return <ContainerOperators operators={operators} />;
 }
