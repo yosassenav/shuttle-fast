@@ -1,18 +1,17 @@
+import { useRouter } from "next/router";
 import { InferGetServerSidePropsType } from "next";
+
 import { User } from "@prisma/client";
-
 import { ContainerUsers } from "@/containers/users";
-import { Fragment, useEffect } from "react";
-import { useState } from "react";
-
-const WaitPromise = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 interface ISsrPageViews
   extends InferGetServerSidePropsType<typeof getServerSideProps> {}
 
 /* Función SSR: Server Side Rendering */
 export const getServerSideProps = async () => {
-  await WaitPromise(1500);
+  const router = useRouter();
+
+  router.basePath;
 
   const res = await fetch("http://localhost:3000/api/users");
   const response: { data: Array<User> } = await res.json();
