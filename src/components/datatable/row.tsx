@@ -1,7 +1,6 @@
+import { TableRow } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import Table from "@material-ui/core/Table";
-import TableRow from "@material-ui/core/TableRow";
-import { Cell } from "src/components/cell";
+import { Cell } from "@/components/datatable/cell";
 
 /*hook: useStyles*/
 const useStyles = makeStyles<Theme, { odd: boolean }>((theme: Theme) => ({
@@ -19,7 +18,7 @@ interface IRowProps<T> {
 /** Se encarga de renderear un conjunto de celdas a partir de ciertos datos.
  */
 const Row = <T,>(props: IRowProps<T>) => {
-  /*deconstrucción javascript*/
+  /* deconstrucción javascript */
   const { data, isEven, index } = props;
 
   const classes = useStyles({

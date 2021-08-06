@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { Chips } from "src/components/chip";
 import { Module } from "src/components/module";
-import { DataTable } from "src/components/datatable";
+import { DataTable } from "src/components/datatable/datatable";
 
 /* Home of main page*/
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
       <Module />
       <Chips />
 
-      <DataTable data={}/>
+      <DataTable data={} />
     </Fragment>
   );
 }

@@ -1,6 +1,5 @@
-import TableBody from "@material-ui/core/TableBody";
-import { Row } from "src/components/row";
-
+import { TableBody } from "@material-ui/core";
+import { Row } from "@/components/datatable/row";
 
 interface IBodyProps<T> {
   data: Array<T>;
@@ -21,7 +20,7 @@ const Body = <T,>(props: IBodyProps<T>) => {
   return (
     <TableBody>
       {data.map((row, idx) => {
-        return <Row isEven index={idx} data={convertToArray(row)} key={idx} />;
+        return <Row data={convertToArray(row)} index={idx} isEven key={idx} />;
       })}
     </TableBody>
   );
