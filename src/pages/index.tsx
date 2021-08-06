@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
-import { Chips } from "src/components/chip";
-import { Module } from "src/components/module";
-import { DataTable } from "src/components/datatable/datatable";
+import { Chips } from "@/components/chip";
+import { Module } from "@/components/module";
+import { DataTable } from "@/components/datatable/datatable";
 
 /* Home of main page*/
 export default function Home() {

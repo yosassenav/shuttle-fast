@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { ThemeProvider } from "@material-ui/core/styles";
 import { CssBaseline } from "@material-ui/core";
-import theme from "src/theme/theme";
+import theme from "@/theme/theme";
 
 export default function MyApp(props) {
   const { Component, pageProps } = props;

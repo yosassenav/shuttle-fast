@@ -16,9 +16,10 @@
     "jsx": "preserve",
     "paths": {
       "@/api/*": ["src/api/*"],
-      "@/views/*": ["src/views/*"],
-      "@/containers/*": ["src/containers/*"],
-      "@/components/*": ["src/components/*"]
+      "@/views/*": ["src/app/views/*"],
+      "@/containers/*": ["src/app/containers/*"],
+      "@/components/*": ["src/app/components/*"],
+      "@/theme/*": ["src/app/theme/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
