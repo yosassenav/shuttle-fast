@@ -1,32 +1,28 @@
-import { useRouter } from "next/router";
-import { InferGetServerSidePropsType } from "next";
-
+import { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import { User } from "@prisma/client";
 import { ContainerUsers } from "@/containers/users";
+import { UserService } from "@/services/userService";
 
-interface ISsrPageViews
-  extends InferGetServerSidePropsType<typeof getServerSideProps> {}
+interface ISsrPage
+  extends InferGetServerSidePropsType<typeof getServerSideProps> {
+  users: Array<User>;
+}
 
 /* Función SSR: Server Side Rendering */
-export const getServerSideProps = async () => {
-  const router = useRouter();
-
-  router.basePath;
-
-  const res = await fetch("http://localhost:3000/api/users");
-  const response: { data: Array<User> } = await res.json();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const users = await UserService.get();
 
   return {
     props: {
-      users: response.data,
+      users,
     },
   };
 };
 
-interface IPageUsersProps extends ISsrPageViews {}
+interface IProps extends ISsrPage {}
 
 /* Componente de tipo Page */
-export default function PageUsers(props: IPageUsersProps) {
+export default function PageUsers(props: IProps) {
   const { users } = props;
 
   return <ContainerUsers users={users} />;

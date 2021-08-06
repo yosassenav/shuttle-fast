@@ -1,16 +1,16 @@
-import React, { Fragment } from "react";
-import { Chips } from "@/components/chip";
-import { Module } from "@/components/module";
-import { DataTable } from "@/components/datatable/datatable";
+import React, { useState, useEffect } from "react";
 
 /* Home of main page*/
 export default function Home() {
-  return (
-    <Fragment>
-      <Module />
-      <Chips />
+  const [count, setCount] = useState(0);
 
-      <DataTable data={} />
-    </Fragment>
-  );
+  useEffect(() => {
+    document.title = `You clicked ${count} times`;
+  }, [count]);
+
+  const onClick = () => {
+    setCount(count + 1);
+  };
+
+  return <div onClick={onClick}>{"Count: " + count}</div>;
 }

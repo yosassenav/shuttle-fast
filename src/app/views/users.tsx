@@ -1,5 +1,8 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { User } from "@prisma/client";
+import { DataTable } from "@/components/datatable/datatable";
+
+const columnNames = ["id", "name", "lastName", "password", "creationDate"];
 
 interface IViewUsersProps {
   users: User[] | null;
@@ -9,35 +12,10 @@ interface IViewUsersProps {
 const ViewUsers = (props: IViewUsersProps) => {
   const { users } = props;
 
-  const loading = <div>Loading...</div>;
+  if (users === null) return <div>Loading...</div>;
+  if (users) return <DataTable<User> data={users} columnNames={columnNames} />;
 
-  const render = (
-    <table>
-      <thead>
-        <tr>
-          <td>id</td>
-          <td>name</td>
-          <td>email</td>
-          <td>password</td>
-        </tr>
-      </thead>
-      <tbody>
-        {users &&
-          users.map((user, i) => {
-            return (
-              <tr key={i}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.password}</td>
-              </tr>
-            );
-          })}
-      </tbody>
-    </table>
-  );
-
-  return users === null ? loading : render;
+  return <div>No Data</div>;
 };
 
 export { ViewUsers };

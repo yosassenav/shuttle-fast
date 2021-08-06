@@ -1,28 +1,21 @@
-import { ViewUsers } from "@/views/users";
-import { User } from "@prisma/client";
 import React, { useEffect, useState } from "react";
+import { User } from "@prisma/client";
+import { ViewUsers } from "@/views/users";
 
-const WaitPromise = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-interface IContainerUsersProps {
+interface IContainerProps {
   users: User[];
 }
 
 /* Se encarga de la lógica, estados, y eventos. */
-const ContainerUsers = (props: IContainerUsersProps) => {
+const ContainerUsers = (props: IContainerProps) => {
   const { users } = props;
 
-  const [usersList, setUserList] = useState<User[]>(null);
+  const [usersList, setUsersList] = useState<User[]>(null);
 
   useEffect(() => {
-    wait();
-  }, []);
-
-  const wait = async () => {
-    await WaitPromise(5000);
-
-    setUserList(users);
-  };
+    console.log({ users });
+    setUsersList(users);
+  }, [users]);
 
   return <ViewUsers users={usersList} />;
 };

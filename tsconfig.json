@@ -19,7 +19,8 @@
       "@/views/*": ["src/app/views/*"],
       "@/containers/*": ["src/app/containers/*"],
       "@/components/*": ["src/app/components/*"],
-      "@/theme/*": ["src/app/theme/*"]
+      "@/theme/*": ["src/app/theme/*"],
+      "@/services/*": ["src/app/services/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

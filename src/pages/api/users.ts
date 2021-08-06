@@ -4,7 +4,7 @@ import { UserController } from "@/api/user/controller";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const controller = new UserController();
 
-  Route.navigate({
+  await Route.navigate({
     controller,
     req,
     res,
@@ -70,9 +70,9 @@ class Route extends BaseRoute {
     const { controller, req, res } = props;
     const result = await controller.getUsers(req, res);
 
-    res.status(200).json({
-      data: result,
-    });
+    console.log({ result });
+
+    res.status(200).json(result);
   }
 
   private static async patch(props: IProps) {
