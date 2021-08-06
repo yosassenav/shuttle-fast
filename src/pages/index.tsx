@@ -7,11 +7,10 @@ import { DataTable } from "src/components/datatable";
 export default function Home() {
   return (
     <Fragment>
-      <Module></Module>
-      <Chips></Chips>
+      <Module />
+      <Chips />
 
-      {/* <BasicTable></BasicTable> */}
-      <DataTable />
+      <DataTable data={}/>
     </Fragment>
   );
 }
